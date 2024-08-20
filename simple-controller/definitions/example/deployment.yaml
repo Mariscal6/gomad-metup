@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hello
+    gomad: "true"
+  name: hello
+  namespace: system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello
+      gomad: "true"
+  template:
+    metadata:
+      labels:
+        app: hello
+        gomad: "true"
+    spec:
+      containers:
+        - image: nginx
+          imagePullPolicy: Always
+          name: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
