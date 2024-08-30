@@ -4,8 +4,8 @@ metadata:
   labels:
     app: hello
     gomad: "true"
-  name: hello
-  namespace: system
+  name: hello-gopher
+  namespace: simple-controller
 spec:
   replicas: 1
   selector:

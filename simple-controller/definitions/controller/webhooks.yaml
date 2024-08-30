@@ -1,0 +1,23 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: "simple-controller-webooks"
+  namespace: simple-controller
+  annotations:
+    cert-manager.io/inject-ca-from: simple-controller/simple-webhook-tls
+webhooks:
+  - name: "simple-controller.simple-controller.svc"
+    rules:
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE"]
+        resources: ["deployments"]
+        scope: "Namespaced"
+    clientConfig:
+      service:
+        namespace: simple-controller
+        name: "simple-controller"
+        path: "/validate-apps-v1-deployment"
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
+    timeoutSeconds: 5

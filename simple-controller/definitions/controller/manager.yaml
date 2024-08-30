@@ -11,7 +11,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: simple-controller
-  namespace: system
+  namespace: simple-controller
   labels:
     control-plane: simple-controller
     app.kubernetes.io/name: metup
@@ -31,6 +31,10 @@ spec:
       containers:
         - name: simple-controller
           image: localhost:5000/simple-controller:latest
+          volumeMounts:
+            - name: cert-volume
+              mountPath: /tmp/k8s-webhook-server/serving-certs
+              readOnly: true
           resources:
             limits:
               cpu: 500m
@@ -40,3 +44,24 @@ spec:
               memory: 64Mi
       serviceAccountName: simple-controller
       terminationGracePeriodSeconds: 10
+      volumes:
+        - name: cert-volume
+          secret:
+            secretName: simple-webhook-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-controller
+  namespace: simple-controller
+  labels:
+    control-plane: simple-controller
+    app.kubernetes.io/name: metup
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  ports:
+    - port: 443
+      targetPort: 9443
+  selector:
+    control-plane: simple-controller
+  type: ClusterIP

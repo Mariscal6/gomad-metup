@@ -20,9 +20,10 @@ import (
 	"os"
 
 	simplecon "github.com/Mariscal6/gomad-metup/simple-controller/internal/controller"
+	"github.com/Mariscal6/gomad-metup/simple-controller/internal/webhooks"
 	appsv1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
+	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
@@ -67,11 +68,19 @@ func main() {
 		entryLog.Error(err, "unable to watch.Deployments")
 		os.Exit(1)
 	}
-
+	//
 	// Watch Pods and enqueue owning.Deployment key
-	if err := c.Watch(source.Kind(mgr.GetCache(), &corev1.Pod{},
-		handler.TypedEnqueueRequestForOwner[*corev1.Pod](mgr.GetScheme(), mgr.GetRESTMapper(), &appsv1.Deployment{}, handler.OnlyControllerOwner()))); err != nil {
-		entryLog.Error(err, "unable to watch Pods")
+	// if err := c.Watch(source.Kind(mgr.GetCache(), &corev1.Pod{},
+	// 	handler.TypedEnqueueRequestForOwner[*corev1.Pod](mgr.GetScheme(), mgr.GetRESTMapper(), &appsv1.Deployment{}, handler.OnlyControllerOwner()))); err != nil {
+	// 	entryLog.Error(err, "unable to watch Pods")
+	// 	os.Exit(1)
+	// }
+	//
+	if err := builder.WebhookManagedBy(mgr).
+		For(&appsv1.Deployment{}).
+		WithValidator(&webhooks.DeploymentValidator{}).
+		Complete(); err != nil {
+		entryLog.Error(err, "unable to create webhook", "webhook", "Deployment")
 		os.Exit(1)
 	}
 

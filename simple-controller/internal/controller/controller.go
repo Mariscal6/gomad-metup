@@ -23,6 +23,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/util/intstr"
@@ -47,12 +48,12 @@ var _ reconcile.Reconciler = &ReconcileDeployment{}
 func (r *ReconcileDeployment) Reconcile(ctx context.Context, request reconcile.Request) (reconcile.Result, error) {
 	// set up a convenient log object so we don't have to type request over and over again
 	log := log.FromContext(ctx)
-	log.Info("ns: %s name: %s\n", request.Namespace, request.Name)
+	log.Info("reconciling", request.Namespace, request.Name)
 	// Fetch the Deployment from the cache
 	dep := &appsv1.Deployment{}
 	err := r.client.Get(ctx, request.NamespacedName, dep)
 	if errors.IsNotFound(err) {
-		err = DeleteService(ctx, r.client, dep)
+		err = DeleteSvc(ctx, r.client, request.NamespacedName)
 		return reconcile.Result{}, nil
 	}
 	if err != nil {
@@ -104,11 +105,13 @@ func CreateSvc(ctx context.Context, c client.Client, dep *appsv1.Deployment) err
 	}
 	return nil
 }
-func DeleteService(ctx context.Context, c client.Client, dep *appsv1.Deployment) error {
+
+func DeleteSvc(ctx context.Context, c client.Client, key types.NamespacedName) error {
+	fmt.Printf("Deleting Service %s\n", key)
 	svc := &corev1.Service{}
-	err := c.Get(ctx, client.ObjectKey{Namespace: dep.Namespace, Name: dep.Name}, svc)
+	err := c.Get(ctx, key, svc)
 	if errors.IsNotFound(err) {
-		fmt.Printf("Service %s not found\n", dep.Name)
+		fmt.Printf("Service %s not found\n", key)
 		return nil
 	}
 	if err != nil {
