@@ -4,7 +4,7 @@ metadata:
   labels:
     app: hello
     gomad: "true"
-  name: hello-gopher
+  name: hello-gophers-gomad
   namespace: simple-controller
 spec:
   replicas: 1
@@ -19,9 +19,9 @@ spec:
         gomad: "true"
     spec:
       containers:
-        - image: nginx
+        - image: localhost:5000/gopher-pprof:latest
           imagePullPolicy: Always
-          name: nginx
+          name: gopher-pprof
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               protocol: TCP

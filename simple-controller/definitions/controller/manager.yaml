@@ -43,7 +43,6 @@ spec:
               cpu: 10m
               memory: 64Mi
       serviceAccountName: simple-controller
-      terminationGracePeriodSeconds: 10
       volumes:
         - name: cert-volume
           secret:

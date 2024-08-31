@@ -1,0 +1,48 @@
+package views
+
+templ HelloGopher() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Hi folks!</title>
+			<style>
+        body {
+            background-color: #007d9c; /* Golang style blue */
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+
+        img {
+            width: 400px;
+            height: auto;
+            animation: bounceIn 1s ease-in-out;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) translateY(-100%);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05) translateY(0);
+            }
+            70% {
+                transform: scale(0.9) translateY(-15px);
+            }
+            100% {
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
+		</head>
+		<body>
+			<h1>Hello GoMad</h1>
+			<img src="assets/gopher.png" alt="Golang Gopher"/>
+		</body>
+	</html>
+}
