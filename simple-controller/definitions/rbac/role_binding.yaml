@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: metup
+    app.kubernetes.io/managed-by: kustomize
+  name: simple-controller-rolebinidng
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: simple-controller-role
+subjects:
+  - kind: ServiceAccount
+    name: simple-controller
+    namespace: simple-controller
