@@ -31,6 +31,10 @@ spec:
       containers:
         - name: simple-controller
           image: localhost:5000/simple-controller:latest
+          volumeMounts:
+            - name: cert-volume
+              mountPath: /tmp/k8s-webhook-server/serving-certs
+              readOnly: true
           resources:
             limits:
               cpu: 500m
@@ -39,6 +43,10 @@ spec:
               cpu: 10m
               memory: 64Mi
       serviceAccountName: simple-controller
+      volumes:
+        - name: cert-volume
+          secret:
+            secretName: simple-webhook-tls
 ---
 apiVersion: v1
 kind: Service
