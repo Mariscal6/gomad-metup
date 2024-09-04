@@ -5,7 +5,7 @@ metadata:
     control-plane: simple-controller
     app.kubernetes.io/name: metup
     app.kubernetes.io/managed-by: kustomize
-  name: system
+  name: simple-controller
 ---
 apiVersion: apps/v1
 kind: Deployment

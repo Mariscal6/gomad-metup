@@ -7,6 +7,7 @@
   - Kubernetes
   - Enable Kuberntes
 - Local registry: `docker run -d -p 5000:5000 --name registry registry:2`
+- Install cert-manager [Cert-manager](https://cert-manager.io/)
 
 # Building the sample image
 
